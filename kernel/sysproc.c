@@ -91,3 +91,20 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64
+sys_setuid(void)
+{
+  int uid;
+  argint(0, &uid);
+  struct proc *p = myproc();
+  p->uid = uid;
+  return 0;
+}
+
+uint64
+sys_getuid(void)
+{
+  struct proc *p = myproc();
+  return p->uid;
+}

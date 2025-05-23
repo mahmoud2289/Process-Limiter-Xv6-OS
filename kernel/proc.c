@@ -58,6 +58,24 @@ procinit(void)
   }
 }
 
+
+// count processes per user
+int
+count_user_procs(int uid)
+{
+  struct proc *p;   // pointer to iterate through processes
+  int count = 0;
+
+  acquire(&wait_lock);     // aquire the lock to safely access the process array proc[]
+  for(p = proc; p < &proc[NPROC]; p++){
+    if(p->state != UNUSED && p->uid == uid)     // check if the process is active '!= UNUSED' and belongs to the user
+      count++;
+  }
+  release(&wait_lock);     // release the lock after traversal
+  return count;
+}
+
+
 // Must be called with interrupts disabled,
 // to prevent race with process being moved
 // to a different CPU.
@@ -237,6 +255,8 @@ userinit(void)
   p = allocproc();
   initproc = p;
   
+  p->uid = 0; // set the root user  ‘uid’ to 0 for the first process ‘root’
+  
   // allocate one user page and copy initcode's instructions
   // and data into it.
   uvmfirst(p->pagetable, initcode, sizeof(initcode));
@@ -282,12 +302,21 @@ fork(void)
   int i, pid;
   struct proc *np;
   struct proc *p = myproc();
-
+  
+  struct proc *curproc = myproc(); // this line used in enforcing the per-user process limit 
+  
+  // enforce per-user process limit
+  if(count_user_procs(curproc->uid) >= MAXPROC_PER_USER){
+    return -1;      // fail fork if limit 'MAXPROC_PER_USER' has been reached
+  }
   // Allocate process.
   if((np = allocproc()) == 0){
     return -1;
   }
-
+  
+  np->uid = curproc->uid; // child inherits parent's uid,  this line assigns the parent's uid to the child, ensuring that both processes belong to the same user
+  
+  
   // Copy user memory from parent to child.
   if(uvmcopy(p->pagetable, np->pagetable, p->sz) < 0){
     freeproc(np);
