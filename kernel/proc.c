@@ -6,6 +6,9 @@
 #include "proc.h"
 #include "defs.h"
 
+
+int g_maxProcs = 64;
+
 struct cpu cpus[NCPU];
 
 struct proc proc[NPROC];
@@ -306,7 +309,7 @@ fork(void)
   struct proc *curproc = myproc(); // this line used in enforcing the per-user process limit 
   
   // enforce per-user process limit
-  if(count_user_procs(curproc->uid) >= MAXPROC_PER_USER){
+  if(count_user_procs(curproc->uid) >= g_maxProcs){
     return -1;      // fail fork if limit 'MAXPROC_PER_USER' has been reached
   }
   // Allocate process.
