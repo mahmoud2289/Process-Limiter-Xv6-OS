@@ -108,3 +108,22 @@ sys_getuid(void)
   struct proc *p = myproc();
   return p->uid;
 }
+
+
+
+uint64 sys_getProcCap(void)
+{
+  return g_maxProcs; //accessing the kernel-space global with a system call.
+}
+
+uint64 sys_setProcCap(void)
+{
+  int max;
+  argint(0, &max);
+  
+  if(max < 0)
+  return 0; //won't set g_maxProcs to a negative value.
+
+  g_maxProcs = max;
+  return g_maxProcs;
+}

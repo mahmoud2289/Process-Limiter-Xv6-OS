@@ -104,6 +104,8 @@ extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
 extern uint64 sys_getuid(void);
 extern uint64 sys_setuid(void);
+extern uint64 sys_getProcCap(void);
+extern uint64 sys_setProcCap(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -131,6 +133,8 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_getuid]  sys_getuid,
 [SYS_setuid]  sys_setuid,
+[SYS_getProcCap] sys_getProcCap,
+[SYS_setProcCap] sys_setProcCap
 };
 
 void

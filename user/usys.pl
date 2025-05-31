@@ -38,3 +38,5 @@ entry("sleep");
 entry("uptime");
 entry("setuid");
 entry("getuid");
+entry("getProcCap");
+entry("setProcCap");

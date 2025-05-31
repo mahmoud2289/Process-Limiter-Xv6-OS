@@ -12,5 +12,7 @@
 #define FSSIZE       2000  // size of file system in blocks
 #define MAXPATH      128   // maximum file path name
 #define USERSTACK    1     // user stack pages
-#define MAXPROC_PER_USER 4 // maximum number of processes per user
+extern int g_maxProcs; //dynamic max processes number
+#define MAXPROC_PER_USER 4 // maximum number of processes per user (static limit) note: won't be used anymore
+
 
